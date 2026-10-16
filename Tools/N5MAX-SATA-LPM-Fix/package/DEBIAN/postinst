@@ -1,0 +1,29 @@
+#!/bin/sh
+# n5max-sata-lpm-fix postinst: apply the fix immediately after installation.
+set -e
+
+if [ "$1" = "configure" ]; then
+    # Reload udev rules and re-trigger SCSI hosts so the new rule applies now.
+    if command -v udevadm >/dev/null 2>&1; then
+        udevadm control --reload-rules || true
+        udevadm trigger --subsystem-match=scsi_host --action=change || true
+    fi
+
+    # Register and run the oneshot service for environments where udev
+    # triggering alone is not enough (e.g. the rule lands after coldplug).
+    if [ -d /run/systemd/system ]; then
+        systemctl daemon-reload || true
+        systemctl enable n5max-sata-lpm-fix.service >/dev/null 2>&1 || true
+        systemctl start n5max-sata-lpm-fix.service || true
+    fi
+
+    # Report the resulting state so the install output confirms the fix.
+    echo "n5max-sata-lpm-fix: SATA link power management policies are now:"
+    for f in /sys/class/scsi_host/host*/link_power_management_policy; do
+        if [ -e "$f" ]; then
+            echo "  $f: $(cat "$f" 2>/dev/null)"
+        fi
+    done
+fi
+
+exit 0

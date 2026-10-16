@@ -1,0 +1,3 @@
+# N5 MAX: keep SATA link power management at max_performance.
+# See the N5 MAX Known Issues documentation for details.
+ACTION=="add|change", SUBSYSTEM=="scsi_host", ATTR{link_power_management_policy}="max_performance"

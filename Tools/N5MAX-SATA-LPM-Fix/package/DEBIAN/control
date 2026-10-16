@@ -1,0 +1,19 @@
+Package: n5max-sata-lpm-fix
+Source: n5max-sata-lpm-fix
+Version: 1.0.0
+Architecture: all
+Maintainer: Alpha Area <awpak78@hotmail.com>
+Installed-Size: 8
+Depends: udev, systemd
+Section: admin
+Priority: optional
+Homepage: https://github.com/minisforum-docs/N5-MAX-Docs
+Description: Keep N5 MAX SATA link power management at max_performance
+ The N5 MAX SATA controller (a JMicron JMB585 driving the five HDD bays)
+ fails to wake reliably from the 'Partial' SATA link power state that the
+ min_power_with_partial policy enables by default on some kernels. The
+ resulting link resets can cause I/O errors and filesystem corruption.
+ .
+ This package installs a udev rule and a systemd oneshot service that set
+ link_power_management_policy to max_performance for all SCSI hosts, at
+ installation time and on every boot.

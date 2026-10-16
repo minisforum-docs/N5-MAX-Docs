@@ -1,0 +1,13 @@
+[Unit]
+Description=N5 MAX: keep SATA link power management at max_performance
+Documentation=https://github.com/minisforum-docs/N5-MAX-Docs
+After=systemd-udev-settle.service
+Wants=systemd-udev-settle.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'for f in /sys/class/scsi_host/host*/link_power_management_policy; do if [ -e "$f" ]; then echo max_performance > "$f"; fi; done'
+
+[Install]
+WantedBy=multi-user.target

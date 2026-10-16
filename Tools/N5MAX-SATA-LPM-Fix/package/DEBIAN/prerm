@@ -1,0 +1,11 @@
+#!/bin/sh
+# n5max-sata-lpm-fix prerm: stop and disable the service before removal.
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    if [ -d /run/systemd/system ]; then
+        systemctl disable --now n5max-sata-lpm-fix.service >/dev/null 2>&1 || true
+    fi
+fi
+
+exit 0

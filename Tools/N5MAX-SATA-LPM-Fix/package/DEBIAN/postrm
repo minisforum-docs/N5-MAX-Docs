@@ -1,0 +1,15 @@
+#!/bin/sh
+# n5max-sata-lpm-fix postrm: drop our udev rule from the daemon's view.
+# Note: the policy applied to the live SCSI hosts is left unchanged; it
+# reverts to the kernel default on the next reboot.
+set -e
+
+if command -v udevadm >/dev/null 2>&1; then
+    udevadm control --reload-rules || true
+fi
+
+if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload || true
+fi
+
+exit 0
